@@ -1,9 +1,8 @@
 # Self Driving Care Readme
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Team DRaiVE
 
-### Getting Started
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+MIT Car Race project
 
 #### Clone GIT repo
 ```
