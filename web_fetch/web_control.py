@@ -5,6 +5,8 @@
 
 print("Importing libraries")
 from selenium import webdriver
+import time
+import urllib
 print("Finished importing")
 
 def nn(image):
@@ -15,15 +17,16 @@ def nn(image):
 	return (0.5,1.0,0.0)
 
 def connect(ip):
-	webaddr="http://"+ip+":8887"
+	webaddr="http://"+ip+":8887/video"
+	save_path="/home/andrew/Dropbox/Uni assignments/COMP3615/selfdriving/web_fetch/"
 	driver = webdriver.Chrome()
 
 	print(webaddr)
 
 	driver.get(webaddr)
-	# img_window=driver.find_element_by_xpath("//img[@id='mpeg-image']")
-	# img_src = img_window.get_attribute("src")
-	# urllib.urlretrieve(src, "captcha.png")
-	# print(img_src)
+	driver.get_screenshot_as_file('/tmp/screen.png')
+	print("saved screenshot")
+
+	time.sleep(10)
 
 connect("192.168.43.14")
