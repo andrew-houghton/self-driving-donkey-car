@@ -7,14 +7,33 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
 import json
+from PIL import Image
 import pyscreenshot as ImageGrab
+import numpy as np
+from matplotlib import pyplot as plt
 
-def nn(image):
+def nn(data):
 	# This function represents the neural network
 	# INPUT image array (120x120x3)
 	# OUTPUT tuple (throttle, left, right)
+	np_data=np.asarray(data)
+	from scipy.misc import imshow
+	imshow(np_data)
 
 	return (0.5,1.0,0.0)
+
+def nn2(data):
+	# This function represents the neural network
+	# INPUT image array (120x120x3)
+	# OUTPUT tuple (throttle, left, right)
+	if (len(data)==2 and len(data[0])==2):
+		if sum(data[0][0])+sum(data[0][1])>sum(data[1][0])+sum(data[1][1]):
+			return (1,1,0) #top half greater than bottom = left
+		else:
+			return (1,0,1) #bottom greater = right
+	else:
+		print("invalid image size")
+		return (0.5,1.0,0.0)
 
 def convert_image(image, size):
 	### convert file from row major format
@@ -33,7 +52,8 @@ def connect(ip):
 	#CONSTANTS
 	throttle_limit = 0.3
 	test_duration = 10
-	image_size=(2,2)
+	image_size=(120,120)
+	loop_duration=1
 
 	#establish a connection
 	web_address="http://"+ip+":8887/drive"
@@ -52,8 +72,8 @@ def connect(ip):
 	commmand_format = '''$.post("{0}",'{1}')'''
 	instructions = {"angle":0,"throttle":0,"drive_mode":"user","recording":False}
 	try:
-		for i in range(4):
-			time.sleep(0.5)
+		for i in range(loop_duration):
+			time.sleep(1)
 
 			# part of the screen
 			img=ImageGrab.grab(bbox=(
@@ -65,14 +85,14 @@ def connect(ip):
 
 			img=img.resize(image_size)
 			image=list(img.getdata())
-			nn_image=convert_image(image,image_size)
+			image=convert_image(image,image_size)
 			# img.save("capture/grab{0}.bmp".format(i))
 
-			instructions=nn(nn_image)
+			nn_output=nn(image)
 
 			#construct the javascript command
-			instructions["angle"]=angle
-			instructions["throttle"]=throttle*throttle_limit
+			instructions["angle"]=nn_output[1]-nn_output[2]
+			instructions["throttle"]=nn_output[0]*throttle_limit
 			full_command=commmand_format.format(web_address,json.dumps(instructions))
 			# print(full_command)
 
