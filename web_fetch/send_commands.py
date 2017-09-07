@@ -5,8 +5,10 @@
 
 print("Importing libraries")
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import time
 import json
+import pyscreenshot as ImageGrab
 print("Finished importing")
 
 # def nn(image):
@@ -23,15 +25,36 @@ def connect(ip):
 
 	#establish a connection
 	web_address="http://"+ip+":8887/drive"
-	driver = webdriver.Chrome()
+	chromeOptions = Options()
+	chromeOptions.add_argument("--kiosk")
+	driver = webdriver.Chrome(chrome_options=chromeOptions)
+	# driver = webdriver.Chrome()
 	driver.get(web_address)
+	driver.maximize_window()
+
+
+	time.sleep(1) #wait for page to load.
+	img_window=driver.find_element_by_xpath("//img[@id='mpeg-image']")
+	img_location=img_window.location
+	img_size=img_window.size
+	print(img_location)
+	print(img_size)
 
 	#set the format for the POST command
 	commmand_format = '''$.post("{0}",'{1}')'''
 	instructions = {"angle":0,"throttle":0,"drive_mode":"user","recording":False}
 	try:
-		for i in range(10):
+		for i in range(2):
 			time.sleep(1)
+
+			# part of the screen
+			img=ImageGrab.grab(bbox=(
+				img_location["x"],
+				img_location["y"],
+				img_location["x"]+img_size["width"],
+				img_location["y"]+img_size["height"]+40
+			)) # X1,Y1,X2,Y2
+			img.save("capture/grab{0}.jpg".format(i))
 
 			#swerving (instead of NNs)
 			throttle=i%2
