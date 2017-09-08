@@ -15,16 +15,17 @@ import numpy as np
 
 def nn(data):
 	### This function represents the neural network
+	model_filename="3615.h5"
 	# INPUT image numpy array (120x120x3)
 	# OUTPUT tuple (throttle, left, right)
 
 	import SelfDrivingTraining
 	from datetime import datetime
 	finalModel = SelfDrivingTraining.buildModel()
-	finalModel.load_weights("3615.h5") #this needs to point to a valid model
+	finalModel.load_weights(model_filename) #this needs to point to a valid model
 	
 	before=datetime.now()
-	output = finalModel.predict(data_test[0])
+	output = finalModel.predict(data)
 	after=datetime.now()
 
 	print("before\t{0}\tafter\t{1}".format(before,after))
