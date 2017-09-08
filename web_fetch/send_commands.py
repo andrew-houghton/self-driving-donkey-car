@@ -131,13 +131,13 @@ def connect(ip):
 			print(full_command)
 
 			# run the javascript command from the browser window (will be immediately executed on the car)
-			# driver.execute_script(full_command)
+			driver.execute_script(full_command)
 	finally:
 		# Try to stop the car
 		instructions["angle"]=0
 		instructions["throttle"]=0
 		full_command=commmand_format.format(web_address,json.dumps(instructions))
-		# driver.execute_script(full_command)
+		driver.execute_script(full_command)
 
 #Ip address of raspberry pi
 connect("10.19.163.82")
