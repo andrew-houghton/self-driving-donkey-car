@@ -16,6 +16,14 @@ def nn(data):
 	### This function represents the neural network
 	# INPUT image numpy array (120x120x3)
 	# OUTPUT tuple (throttle, left, right)
+
+	# import SelfDrivingTraining
+	# finalModel = buildModel()
+	# finalModel.load_weights("/Users/ChesterAiGo/Desktop/All_Files/Sem2_2017/COMP3615/3615.h5")
+	
+	# output = finalModel.predict(data_test[0])
+	# print(output)
+
 	return (0.5,1.0,0.0)
 
 def nn2(data):
@@ -59,7 +67,7 @@ def connect(ip):
 	img_location["y"]+=browser_header_height # this is a magic number which represents the height of the browser window header.
 
 	#set the format for the POST command
-	commmand_format = '''$.post("{0}",'{1}')'''
+	commmand_format = '''$.post("{0}",'{1}')''' #first POST argument is URL, second post arg is driving instructions
 	instructions = {"angle":0,"throttle":0,"drive_mode":"user","recording":False}
 
 	try: #using a try/finally block to make sure that the car is stopped when the script finishes.
@@ -77,6 +85,7 @@ def connect(ip):
 			screenshot=screenshot.resize(image_size) #argument is (width,height)
 			image_array=list(screenshot.getdata()) #convert the image to an array
 			image_array=convert_image(image_array,image_size) #convert the array to a
+			# now that convert_image has been run: red pixel at x 2 y 3 would be image_array[3][2][0]
 
 			#send the image to the neural network to be processed
 			nn_output=nn(np.asarray(image_array))
