@@ -37,8 +37,8 @@ def nn(data):
 	list_output=output.tolist()[0] #left, straight, right
 
 	print("list_output\t{0}".format(list_output))
-	
-	return output
+
+	return list_output
 
 def nn2(data):
 	### If the top half of the image is brighter than the bottom turn left.
@@ -110,19 +110,21 @@ def connect(ip):
 			# nn_output=nn2(image)
 
 			#construct the javascript command
-			#set turning (from -1 to 1) and throttle (from -1 to 1)
-			if nn_output.index(max(list)) == 0:
-				#left
+			#angle control
+			if nn_output[0]==1: #left
 				instructions["angle"]=-1
-			elif nn_output.index(max(list)) == 2:
-				#right
+			if nn_output[1]==1:
+				instructions["angle"]=0
+			if nn_output[2]==1: #right
 				instructions["angle"]=1
 			else:
-				#straight
 				instructions["angle"]=0
 
-			# instructions["throttle"]=nn_output[0]*throttle_limit #throttle is limited to prevent car driving too fast to control
-			instructions["throttle"]=0.5*throttle_limit #throttle is limited to prevent car driving too fast to control
+			#throttle control
+			if nn_output[1]==1:
+				instructions["throttle"]=throttle_limit #throttle is limited to prevent car driving too fast to control
+			else:
+				instructions["throttle"]=0.8*throttle_limit #throttle is limited to prevent car driving too fast to control
 
 			#construct the command to send to the webserver
 			full_command=commmand_format.format(web_address,json.dumps(instructions))
@@ -138,4 +140,4 @@ def connect(ip):
 		# driver.execute_script(full_command)
 
 #Ip address of raspberry pi
-connect("10.16.74.158")
+connect("10.19.163.82")
