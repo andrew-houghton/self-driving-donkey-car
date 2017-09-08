@@ -19,6 +19,8 @@ def nn(data):
 	# INPUT image numpy array (120x120x3)
 	# OUTPUT tuple (throttle, left, right)
 
+	print(data.shape)
+
 	import SelfDrivingTraining
 	from datetime import datetime
 	finalModel = SelfDrivingTraining.buildModel()
@@ -32,6 +34,10 @@ def nn(data):
 
 	print(output)
 
+	list_output=output.tolist()[0] #left, straight, right
+
+	print("list_output\t{0}".format(list_output))
+	
 	return output
 
 def nn2(data):
@@ -100,13 +106,23 @@ def connect(ip):
 			image_array=convert_image(image_array,image_size) #convert the array to a
 
 			#send the image to the neural network to be processed
-			nn_output=nn(np.asarray(image_array))
+			nn_output=nn(np.asarray([image_array]))
 			# nn_output=nn2(image)
 
 			#construct the javascript command
 			#set turning (from -1 to 1) and throttle (from -1 to 1)
-			instructions["angle"]=nn_output[1]-nn_output[2] # TODO figure out how to combine left and right
-			instructions["throttle"]=nn_output[0]*throttle_limit #throttle is limited to prevent car driving too fast to control
+			if nn_output.index(max(list)) == 0:
+				#left
+				instructions["angle"]=-1
+			elif nn_output.index(max(list)) == 2:
+				#right
+				instructions["angle"]=1
+			else:
+				#straight
+				instructions["angle"]=0
+
+			# instructions["throttle"]=nn_output[0]*throttle_limit #throttle is limited to prevent car driving too fast to control
+			instructions["throttle"]=0.5*throttle_limit #throttle is limited to prevent car driving too fast to control
 
 			#construct the command to send to the webserver
 			full_command=commmand_format.format(web_address,json.dumps(instructions))
