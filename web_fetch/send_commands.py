@@ -11,12 +11,27 @@ import time #for waiting for pages to load
 import json #for sending the json data in post requests from the webapp
 from PIL import Image #can't remember
 import pyscreenshot as ImageGrab #grab screenshots
+import numpy as np
 
 def nn(data):
 	### This function represents the neural network
 	# INPUT image numpy array (120x120x3)
 	# OUTPUT tuple (throttle, left, right)
-	return (0.5,1.0,0.0)
+
+	import SelfDrivingTraining
+	from datetime import datetime
+	finalModel = SelfDrivingTraining.buildModel()
+	finalModel.load_weights("3615.h5")
+	
+	before=datetime.now()
+	output = finalModel.predict(data_test[0])
+	after=datetime.now()
+
+	print("before\t{0}\tafter\t{1}".format(before,after))
+
+	print(output)
+
+	return output
 
 def nn2(data):
 	### If the top half of the image is brighter than the bottom turn left.
@@ -43,13 +58,15 @@ def connect(ip):
 	throttle_limit = 0.3
 	image_size=(120,120)
 	web_address="http://"+ip+":8887/drive"
-	loop_duration=200
+	loop_duration=10
 	browser_header_height=40 #magic number. Represents the height of the top of the chrome browser
 
 	#establish a browser connection to the webapp
-	chromeOptions = Options()
-	chromeOptions.add_argument("--kiosk")
-	driver = webdriver.Chrome(chrome_options=chromeOptions) #driver is the webdriver which controls the browser
+	driver = webdriver.Chrome()
+	driver.maximize_window()
+	# chromeOptions = Options()
+	# chromeOptions.add_argument("--kiosk")
+	# driver = webdriver.Chrome(chrome_options=chromeOptions) #driver is the webdriver which controls the browser
 	driver.get(web_address)
 
 	#find the location of the image within the window
@@ -62,6 +79,9 @@ def connect(ip):
 	commmand_format = '''$.post("{0}",'{1}')'''
 	instructions = {"angle":0,"throttle":0,"drive_mode":"user","recording":False}
 
+	#wait for user input
+	# input("Press Enter to start driving.")
+
 	try: #using a try/finally block to make sure that the car is stopped when the script finishes.
 		for i in range(loop_duration):
 			# Take the screenshot
@@ -71,7 +91,7 @@ def connect(ip):
 			)) # X1,Y1,X2,Y2
 
 			# Save the image
-			# screenshot.save("capture/grab{0}.bmp".format(i))
+			screenshot.save("capture/grab{0}.bmp".format(i))
 
 			#resize the image to the desired size
 			screenshot=screenshot.resize(image_size) #argument is (width,height)
@@ -89,16 +109,16 @@ def connect(ip):
 
 			#construct the command to send to the webserver
 			full_command=commmand_format.format(web_address,json.dumps(instructions))
-			# print(full_command)
+			print(full_command)
 
 			# run the javascript command from the browser window (will be immediately executed on the car)
-			driver.execute_script(full_command)
+			# driver.execute_script(full_command)
 	finally:
 		# Try to stop the car
 		instructions["angle"]=0
 		instructions["throttle"]=0
 		full_command=commmand_format.format(web_address,json.dumps(instructions))
-		driver.execute_script(full_command)
+		# driver.execute_script(full_command)
 
 #Ip address of raspberry pi
-connect("192.168.43.14")
+connect("10.16.74.158")
