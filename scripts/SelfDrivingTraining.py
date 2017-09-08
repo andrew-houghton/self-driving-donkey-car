@@ -56,7 +56,7 @@ def resize_crop_one(LRS, filename):
     print("done")
 
 
-# Call it using resize_crop_a_dir("Dataset/COMP3615/Straight")
+# Call it using resize_crop_a_dir("Dataset/COMP3615/Straight/")
 def resize_crop_a_dir(dir_name):
     from os import listdir
 
@@ -123,11 +123,20 @@ def loadData(LRS, path):
     return data, label
 
 # For comp3615 - self_driving only, paths need to be modified when running on P2
-def loadAllData():
+def loadAllData(testing = False):
 
-    data_left, label_left = loadData("Left", "/Users/ChesterAiGo/PycharmProjects/DeepLearning/Dataset/COMP3615/Processed/Left/")
-    data_right, label_right = loadData("Right", "/Users/ChesterAiGo/PycharmProjects/DeepLearning/Dataset/COMP3615/Processed/Right/")
-    data_straight, label_straight = loadData("Straight", "/Users/ChesterAiGo/PycharmProjects/DeepLearning/Dataset/COMP3615/Processed/Straight/")
+    path_L = "Dataset/COMP3615/Processed/Left/"
+    path_R = "Dataset/COMP3615/Processed/Right/"
+    path_S = "Dataset/COMP3615/Processed/Straight/"
+
+    if(testing):
+        path_L = "Dataset/COMP3615/Processed/Testing/Left/"
+        path_R = "Dataset/COMP3615/Processed/Testing/Right/"
+        path_S = "Dataset/COMP3615/Processed/Testing/Straight/"
+
+    data_left, label_left = loadData("Left", path_L)
+    data_right, label_right = loadData("Right", path_R)
+    data_straight, label_straight = loadData("Straight", path_S)
 
     data = np.concatenate((data_left, data_right, data_straight))
     label = np.concatenate((label_left, label_right, label_straight))
@@ -136,12 +145,6 @@ def loadAllData():
     print("Total Label shape:", label.shape)
 
     return data, label
-
-def loadTestData():
-    data_test_s, label_test_s = loadData("Straight", "/Users/ChesterAiGo/PycharmProjects/DeepLearning/Dataset/COMP3615/Processed/Testing_All_Straight/")
-    print(label_test_s)
-    print("Testing data loaded")
-    return data_test_s, label_test_s
 
 
 def buildModel():
@@ -155,12 +158,12 @@ def buildModel():
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
 
-    model.add(Conv2D(64, (3, 3), padding='same'))
-    model.add(Activation('relu'))
-    model.add(Conv2D(64, (3, 3)))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
+  #  model.add(Conv2D(64, (3, 3), padding='same'))
+  #  model.add(Activation('relu'))
+  #  model.add(Conv2D(64, (3, 3)))
+  #  model.add(Activation('relu'))
+  #  model.add(MaxPooling2D(pool_size=(2, 2)))
+  #  model.add(Dropout(0.25))
 
     model.add(Flatten())
     model.add(Dense(512))
@@ -173,11 +176,10 @@ def buildModel():
 
 
 # All the data & Label now have been loaded
-# data, label = loadAllData()
-#
-# data_test, label_test = loadTestData()
-# cp = ModelCheckpoint("3615.hdf5", monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='max')
-# callbacks_list = [cp]
+data, label = loadAllData()
+data_test, label_test = loadAllData(testing = True)
+cp = ModelCheckpoint("3615_2nd_fromCp.hdf5", monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='max')
+callbacks_list = [cp]
 
 # vgg_16_model = VGG16(input_shape=(120, 120, 3), include_top=False, weights=None)
 # vgg_16_model.summary()
@@ -190,17 +192,21 @@ def buildModel():
 # finalModel = Model(input = vgg_16_model.input, output = x)
 # finalModel.summary()
 
-# finalModel = buildModel()
+finalModel = buildModel()
+# sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
 
-# finalModel.compile(loss='categorical_crossentropy',optimizer='Adam', metrics=['accuracy'])
+finalModel.compile(loss='categorical_crossentropy',optimizer='adam', metrics=['accuracy'])
 
-# # finalModel.fit(x = data, y = label, epochs = 1, validation_split=0.2, callbacks=callbacks_list)
-#
-# # For testing only
+finalModel.fit(x = data, y = label, epochs = 10, validation_split=0.2, callbacks=callbacks_list, batch_size=10)
+
+# For testing only
 # finalModel.load_weights("/Users/ChesterAiGo/Desktop/All_Files/Sem2_2017/COMP3615/3615.h5")
 
 print("Done")
 
-# score = finalModel.evaluate(x = data_test, y = label_test)
+score = finalModel.evaluate(x = data_test, y = label_test)
 
-# print(score[1] * 100)
+print(score[1] * 100)
+
+# if(score[1] * 100 > 80):
+#     finalModel.save('finalModel.h5')
