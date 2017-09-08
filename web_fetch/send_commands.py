@@ -21,7 +21,7 @@ def nn(data):
 	import SelfDrivingTraining
 	from datetime import datetime
 	finalModel = SelfDrivingTraining.buildModel()
-	finalModel.load_weights("3615.h5")
+	finalModel.load_weights("3615.h5") #this needs to point to a valid model
 	
 	before=datetime.now()
 	output = finalModel.predict(data_test[0])
@@ -62,11 +62,11 @@ def connect(ip):
 	browser_header_height=40 #magic number. Represents the height of the top of the chrome browser
 
 	#establish a browser connection to the webapp
-	driver = webdriver.Chrome()
-	driver.maximize_window()
-	# chromeOptions = Options()
-	# chromeOptions.add_argument("--kiosk")
-	# driver = webdriver.Chrome(chrome_options=chromeOptions) #driver is the webdriver which controls the browser
+	# driver = webdriver.Chrome()
+	# driver.maximize_window()
+	chromeOptions = Options()
+	chromeOptions.add_argument("--kiosk")
+	driver = webdriver.Chrome(chrome_options=chromeOptions) #driver is the webdriver which controls the browser
 	driver.get(web_address)
 
 	#find the location of the image within the window
