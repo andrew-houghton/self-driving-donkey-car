@@ -1,15 +1,17 @@
 
 import cv2
 import numpy as np
+from PIL import Image
+import os
 
 def resize_crop_one(LRS, filename):
 
     if(LRS == 'Left'):
-        path = "Dataset/COMP3615/Left/" + filename
+        path = "/Users/ChesterAiGo/Desktop/ProcessedDataset/Left/" + filename
     elif (LRS == 'Right'):
-        path = "Dataset/COMP3615/Right/" + filename
+        path = "/Users/ChesterAiGo/Desktop/ProcessedDataset/Right/" + filename
     elif (LRS == 'Straight'):
-        path = "Dataset/COMP3615/Straight/" + filename
+        path = "/Users/ChesterAiGo/Desktop/ProcessedDataset/Straight/" + filename
     else:
         raise Exception("??")
 
@@ -21,13 +23,13 @@ def resize_crop_one(LRS, filename):
     img[100:120, 0:120] = 255
 
     if (LRS == 'Left'):
-        path2 = "Dataset/COMP3615/Processed/Left/" + filename
+        path2 = "/Users/ChesterAiGo/Desktop/ProcessedDataset/Left/" + filename
         cv2.imwrite(path2, img)
     elif (LRS == 'Right'):
-        path2 = "Dataset/COMP3615/Processed/Right/" + filename
+        path2 = "/Users/ChesterAiGo/Desktop/ProcessedDataset/Right/" + filename
         cv2.imwrite(path2, img)
     elif (LRS == 'Straight'):
-        path2 = "Dataset/COMP3615/Processed/Straight/" + filename
+        path2 = "/Users/ChesterAiGo/Desktop/ProcessedDataset/Straight/" + filename
         cv2.imwrite(path2, img)
     else:
         raise Exception("??")
@@ -56,4 +58,29 @@ def resize_crop_a_dir(dir_name):
 
 
 
+def bright_all_images():
+    # enhance every pixel
 
+
+    path = "/Users/ChesterAiGo/Desktop/ProcessedDataset/Straight/"
+
+    for filename in os.listdir(path):
+
+        if(filename.endswith(".jpg")):
+
+            im = Image.open(path+filename)
+
+            img_width, img_height = im.size
+
+            for x in range(0, img_width):
+
+                for y in range(0, img_height):
+                    r, g, b = im.getpixel((x, y))
+
+                    im.putpixel((x, y), (int(r * 1.24), int(g * 1.33), int(b * 1.21)))
+
+            im.save(path + filename)
+            print("Done")
+
+
+resize_crop_a_dir("/Users/ChesterAiGo/Desktop/ProcessedDataset/Straight/")
