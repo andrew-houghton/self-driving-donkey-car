@@ -17,7 +17,7 @@ import time
 from docopt import docopt
 import tempfile
 
-import donkey as dk
+import donkeycar as dk
 from keras.callbacks import ModelCheckpoint
 import keras
 
