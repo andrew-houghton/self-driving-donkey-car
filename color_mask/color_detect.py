@@ -5,7 +5,7 @@ import cv2
 img = cv2.imread("red_object1.jpg")
 print (type(img))
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-# define the list of boundaries
+# define the list of boundaries (red)
 lower_range = np.array([169, 100, 100], dtype=np.uint8)
 upper_range = np.array([189, 255, 255], dtype=np.uint8)
 
