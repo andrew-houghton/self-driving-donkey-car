@@ -1,6 +1,7 @@
 # import the necessary packages
 import numpy as np
 import cv2
+import os
 # load the image
 #img = cv2.imread("red_object1.jpg")
 
@@ -43,15 +44,18 @@ while (1):
 
     mask = createMask(img)
     cv2.imshow('mask', mask)
-
+    mask_name = 'mask' + str(count) + '.png'
+    cv2.imshow('Image', vis)
+    mask_path = '/Users/Travis/Documents/color_detect_img/'
+    cv2.imwrite(os.path.join(mask_path, mask_name), mask)
+    print (mask_name+ 'saved')
     cnts, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     for c in cnts:
         x, y, w, h = cv2.boundingRect(c)
         cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
     cv2.imshow('cnt',img)
-    name = 'color'+ str(count) + '.png'
-    cv2.imwrite(name,img)
+
     count += 1
     ch = cv2.waitKey(30) & 0xFF
     if ch == ord('q'):

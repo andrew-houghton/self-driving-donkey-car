@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import os
+
 def draw_flow(img, flow, step=16):
     h, w = img.shape[:2]
     y, x = np.mgrid[step/2:h:step, step/2:w:step].reshape(2,-1)
@@ -76,14 +77,14 @@ if __name__ == '__main__':
                 # if the contour is too small, ignore it
                 # modify parameters for detecting close objects.
                 (x, y, w, h) = cv2.boundingRect(c)
-                if w > 100 and h > 100 and w < 900 and h < 680:
+                if w > 100 and h > 100 and w < 200 and h < 300:
                     cv2.rectangle(vis, (x, y), (x + w, y + h), (0, 0, 255), 4)
 
             cv2.imshow('Image', vis)
-            move_name = 'move' + str(count) + '.jpg'
-            flow_path = '/Users/Travis/Documents/move_img/'
-            cv2.imwrite(os.path.join(flow_path, move_name), vis)
-            print(move_name + 'saved')
+            # move_name = 'move' + str(count) + '.jpg'
+            # flow_path = '/Users/Travis/Documents/move_img/'
+            # cv2.imwrite(os.path.join(flow_path, move_name), vis)
+            # print(move_name + 'saved')
             count += 1
 
         ch = cv2.waitKey(30) & 0xFF
