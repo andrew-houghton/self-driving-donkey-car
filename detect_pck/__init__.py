@@ -6,5 +6,5 @@
    #hsv shows the rectangular box
    flow , hsv = my_detector.show_flow(prev,cur) 
     '''
-from color_detector import color_detector
-from dynamic_object_detector import moving_detector
+from detect_pck.color_detector import color_detector
+from detect_pck.dynamic_object_detector import moving_detector

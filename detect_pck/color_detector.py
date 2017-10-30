@@ -1,3 +1,7 @@
+"""low and up means the lower and upper range of hsv of objects'color
+ 
+ """
+
 import numpy as np
 import cv2
 

@@ -2,12 +2,10 @@ import sys
 import numpy as np
 import cv2
 
-# blue = sys.argv[1]
-# green = sys.argv[2]
-# red = sys.argv[3]
-blue = 32
-green = 72
-red = 229
+blue = sys.argv[1]
+green = sys.argv[2]
+red = sys.argv[3]
+
 color = np.uint8([[[blue, green, red]]])
 hsv_color = cv2.cvtColor(color, cv2.COLOR_BGR2HSV)
 
