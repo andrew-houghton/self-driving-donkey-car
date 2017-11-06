@@ -1,6 +1,6 @@
 # Captsone project USYD
 
-This repository contains code from the captone project for the final year of my degree.
+This repository contains code from the capstone project for the final year of my degree.
 
 ## Project Goal
 
