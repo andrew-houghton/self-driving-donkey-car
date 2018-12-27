@@ -18,11 +18,11 @@ OpenCV was used to create depth maps from the stereo cameras.
 
 Normal image
 
-![Normal photo](./docs/depth1.png)
+![Normal photo](./docs/depth2.png)
 
 Depth Map (darker = further away)
 
-![Depth map](./docs/depth2.png)
+![Depth map](./docs/depth1.png)
 
 ## Photos
 
