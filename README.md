@@ -18,18 +18,18 @@ OpenCV was used to create depth maps from the stereo cameras.
 
 Normal image
 
-![Normal photo](./docs/depth1.jpeg)
+![Normal photo](./docs/depth1.png)
 
 Depth Map (darker = further away)
 
-![Depth map](./docs/depth2.jpeg)
+![Depth map](./docs/depth2.png)
 
 ## Photos
 
 Donkey car (3d printed mount on RC car with raspberry pi)
 
-![Donkey car](./docs/car.jpeg)
+![Donkey car](./docs/car.jpg)
 
 Collecting training data on the track
 
-![Donkey car](./docs/track.jpeg)
+![Donkey car](./docs/track.jpg)
